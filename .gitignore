@@ -31,3 +31,5 @@ archive.zip
 .env
 suren/core/jwt-private.pem
 suren/core/jwt-public.pem
+/db.sqlite3
+.idea
