@@ -26,7 +26,7 @@ async def get_user(
     return result
 
 
-@router.post("/", response_model=CreateUser)
+@router.post("/", response_model=ShowUser)
 async def create_user(
     user: CreateUser,
     session: AsyncSession = Depends(db_helper.get_session),
@@ -59,7 +59,7 @@ async def delete_user(
 
 
 @router.patch("/{user_id}", status_code=status.HTTP_200_OK, response_model=ShowUser)
-async def delete_user(
+async def partial_update_user(
     user_schema: ParticularUpdateUser,
     user: Users = Depends(crud_user.get_user),
     session: AsyncSession = Depends(db_helper.get_session),
@@ -70,7 +70,7 @@ async def delete_user(
 
 
 @router.put("/{user_id}", status_code=status.HTTP_200_OK, response_model=ShowUser)
-async def delete_user(
+async def update_user(
     user_schema: UpdateUser,
     user: Users = Depends(crud_user.get_user),
     session: AsyncSession = Depends(db_helper.get_session),

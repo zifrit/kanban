@@ -10,6 +10,7 @@ from src.db.schematics.user import (
     ParticularUpdateUser,
     UpdateUser,
 )
+from src.utils.auth_utils import hash_password
 import logging
 
 logger = logging.getLogger(__name__)
@@ -29,6 +30,7 @@ async def get_user(
 
 
 async def create_user(session: AsyncSession, user: CreateUser) -> Users:
+    user.password = hash_password(user.password)
     user = Users(**user.model_dump())
     session.add(user)
     await session.commit()
