@@ -6,7 +6,7 @@ from sqlalchemy import String, Boolean
 
 class Users(Base):
     __tablename__ = "users"
-    username: Mapped[str] = mapped_column(String(255))
+    username: Mapped[str] = mapped_column(String(255), unique=True)
     email: Mapped[str] = mapped_column(String(255))
     password: Mapped[str] = mapped_column(String(255))
     is_active: Mapped[bool] = mapped_column(
