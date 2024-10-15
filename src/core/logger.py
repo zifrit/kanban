@@ -1,10 +1,14 @@
+import os
+from pathlib import Path
+
+LOG_DEFAULT_HANDLERS = [
+    "filehandler",
+    "console",
+]
 LOG_FORMAT = (
     "[%(asctime)s.%(msecs)03d]: %(module)10s:%(lineno)-3d %(levelname)-7s - %(message)s"
 )
-LOG_DEFAULT_HANDLERS = [
-    "console",
-]
-
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -36,6 +40,16 @@ LOGGING = {
             "formatter": "access",
             "class": "logging.StreamHandler",
             "stream": "ext://sys.stdout",
+        },
+        "filehandler": {
+            "level": "DEBUG",
+            "class": "logging.handlers.RotatingFileHandler",
+            "formatter": "verbose",
+            "filename": os.path.join(BASE_DIR, "logs", "logs.log"),
+            "mode": "a",
+            "backupCount": 3,
+            "maxBytes": 50000,
+            "encoding": "utf-8",
         },
     },
     "loggers": {

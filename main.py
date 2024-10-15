@@ -1,7 +1,7 @@
 import uvicorn
 from fastapi import FastAPI
 from src.api.user import router as user_router
-from src.utils.logging_setings import LOGGING
+from src.core.logger import LOGGING
 
 app = FastAPI()
 

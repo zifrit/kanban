@@ -1,5 +1,5 @@
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
-from src.db.settings import settings
+from src.core.settings import settings
 
 
 class DatabaseHelper:
@@ -21,4 +21,4 @@ class DatabaseHelper:
             await session.close()
 
 
-db_helper = DatabaseHelper(settings.db_url)
+db_helper = DatabaseHelper(settings.DATABASE_URL_ASYNC)
