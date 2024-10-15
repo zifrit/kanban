@@ -1,5 +1,6 @@
 from src.db.db_connection import db_helper
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.exc import IntegrityError
 from typing import Annotated
 from fastapi import Depends, HTTPException, status, Path, Response
 from sqlalchemy import Select
@@ -30,11 +31,29 @@ async def get_user(
 
 
 async def create_user(session: AsyncSession, user: CreateUser) -> Users:
-    user.password = hash_password(user.password)
-    user = Users(**user.model_dump())
-    session.add(user)
-    await session.commit()
-    await session.refresh(user)
+    user = Users(
+        username=user.username,
+        password=hash_password(user.password),
+        email=user.email,
+    )
+    try:
+        session.add(user)
+        await session.commit()
+        await session.refresh(user)
+    except IntegrityError as e:
+        await session.rollback()
+        if "email" in str(e.orig):
+            raise HTTPException(
+                status_code=400, detail="User with this email already exists"
+            )
+        elif "username" in str(e.orig):
+            raise HTTPException(
+                status_code=400, detail="User with this username already exists"
+            )
+        else:
+            raise HTTPException(
+                status_code=400, detail="Duplicate entry for unique field"
+            )
     return user
 
 
@@ -66,3 +85,11 @@ async def user_activation(
     user.is_active = True
     await session.commit()
     return {"message": "User activated"}
+
+
+async def get_user_by_username(
+    username: str,
+    session: AsyncSession,
+) -> Users:
+    user = await session.scalar(Select(Users).where(Users.username == username))
+    return user
