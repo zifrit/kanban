@@ -26,7 +26,7 @@ async def get_user(
     return result
 
 
-@router.post("/", response_model=ShowUser)
+@router.post("/", response_model=ShowUser, status_code=status.HTTP_201_CREATED)
 async def create_user(
     user: CreateUser,
     session: AsyncSession = Depends(db_helper.get_session),
@@ -34,7 +34,7 @@ async def create_user(
     return await crud_user.create_user(session, user)
 
 
-@router.patch("/activate", status_code=status.HTTP_200_OK)
+@router.post("/activate", status_code=status.HTTP_200_OK)
 async def user_activation(
     user: Users = Depends(crud_user.get_user),
     session: AsyncSession = Depends(db_helper.get_session),
@@ -44,7 +44,7 @@ async def user_activation(
 
 @router.get("/{user_id}", response_model=ShowUser)
 async def get_user(
-    user: ShowUser = Depends(crud_user.get_user),
+    user: ShowUser = Depends(crud_user.get_active_user),
 ) -> ShowUser:
     return user
 

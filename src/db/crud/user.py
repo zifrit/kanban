@@ -18,8 +18,30 @@ logger = logging.getLogger(__name__)
 
 
 async def get_users(session: AsyncSession) -> list[Users]:
-    user = await session.scalars(Select(Users).order_by(Users.id))
+    user = await session.scalars(
+        Select(Users).where(Users.is_active == True).order_by(Users.id)
+    )
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found",
+        )
     return list(user)
+
+
+async def get_active_user(
+    user_id: Annotated[int, Path],
+    session: AsyncSession = Depends(db_helper.get_session),
+) -> Users:
+    user = await session.scalar(
+        Select(Users).where(Users.id == user_id, Users.is_active == True)
+    )
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found",
+        )
+    return user
 
 
 async def get_user(
@@ -27,6 +49,11 @@ async def get_user(
     session: AsyncSession = Depends(db_helper.get_session),
 ) -> Users:
     user = await session.scalar(Select(Users).where(Users.id == user_id))
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found",
+        )
     return user
 
 
@@ -44,15 +71,18 @@ async def create_user(session: AsyncSession, user: CreateUser) -> Users:
         await session.rollback()
         if "email" in str(e.orig):
             raise HTTPException(
-                status_code=400, detail="User with this email already exists"
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="User with this email already exists",
             )
         elif "username" in str(e.orig):
             raise HTTPException(
-                status_code=400, detail="User with this username already exists"
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="User with this username already exists",
             )
         else:
             raise HTTPException(
-                status_code=400, detail="Duplicate entry for unique field"
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Duplicate entry for unique field",
             )
     return user
 
