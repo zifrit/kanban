@@ -37,7 +37,7 @@ LOGGING = {
             "stream": "ext://sys.stdout",
         },
         "access": {
-            "formatter": "access",
+            "formatter": "verbose",
             "class": "logging.StreamHandler",
             "stream": "ext://sys.stdout",
         },
@@ -61,7 +61,7 @@ LOGGING = {
             "level": "INFO",
         },
         "uvicorn.access": {
-            "handlers": ["access"],
+            "handlers": ["access", "filehandler"],
             "level": "INFO",
             "propagate": False,
         },
