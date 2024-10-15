@@ -5,17 +5,15 @@ load_dotenv()
 
 
 class Settings(BaseSettings):
-    DB_HOST: str = "localhost"
-    DB_PORT: int = 5432
-    DB_USER: str = "postgres"
-    DB_PASS: str = "postgres"
-    DB_NAME: str = "postgres"
-    PROJECT_TITLE: str = "my_app"
-    CRYPTO_SECRET_KEY: str = (
-        "5f8e99e562ba9cbf399134a33209bd477910d6cf4f48a0ad3e5d240773c8e7de"
-    )
-    CRYPTO_ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
+    DB_HOST: str
+    DB_PORT: int
+    DB_USER: str
+    DB_PASS: str
+    DB_NAME: str
+    PROJECT_TITLE: str
+    CRYPTO_SECRET_KEY: str
+    CRYPTO_ALGORITHM: str
+    ACCESS_TOKEN_EXPIRE_MINUTES: int
     PROJECT_HOST: str = "localhost"
     PROJECT_PORT: int = 8000
     HOST_URL: str = f"http://{PROJECT_HOST}:{PROJECT_PORT}"
