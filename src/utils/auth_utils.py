@@ -1,4 +1,4 @@
-from datetime import timedelta, datetime
+from datetime import timedelta, datetime, timezone
 
 import bcrypt
 import jwt
@@ -30,8 +30,8 @@ def create_jwt_token(
     access_expire_minutes: int = settings.ACCESS_TOKEN_EXPIRE_MINUTES,
 ):
     data = payload.copy()
-    now = datetime.utcnow()
-    expires = now + timedelta(minutes=access_expire_minutes)
+    now = datetime.now(timezone.utc)
+    expires = now + timedelta(days=access_expire_minutes)
     data.update(
         exp=expires,
         iat=now,
