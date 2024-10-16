@@ -1,9 +1,9 @@
 __all__ = (
     "Base",
     "Users",
-    "Space",
+    "Board",
 )
 from .base_model import Base
 
-from .space import Space
+from .space import Board
 from .user import Users

@@ -5,7 +5,7 @@ from sqlalchemy import String, Boolean
 from sqlalchemy.dialects.postgresql import BYTEA
 
 if TYPE_CHECKING:
-    from src.models.space import Space
+    from src.models.space import Board
 
 
 class Users(Base):
@@ -16,4 +16,4 @@ class Users(Base):
     is_active: Mapped[bool] = mapped_column(
         Boolean, default=True, server_default="true"
     )
-    spaces: Mapped[list["Space"]] = relationship(back_populates="user")
+    boards: Mapped[list["Board"]] = relationship(back_populates="user")

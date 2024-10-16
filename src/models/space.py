@@ -9,8 +9,8 @@ if TYPE_CHECKING:
     from src.models.user import Users
 
 
-class Space(Base):
-    __tablename__ = "space"
+class Board(Base):
+    __tablename__ = "board"
     name: Mapped[str] = mapped_column(String(255))
     user_is: Mapped[int] = mapped_column(ForeignKey("users.id"))
-    user: Mapped["Users"] = relationship(back_populates="spaces")
+    user: Mapped["Users"] = relationship(back_populates="boards")
