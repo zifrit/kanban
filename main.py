@@ -11,8 +11,8 @@ app = FastAPI(
     openapi_url="/api/openapi.json",
 )
 
-app.include_router(user_router, prefix="/user", tags=["user"])
-app.include_router(auth.router, prefix="/auth", tags=["auth"])
+app.include_router(user_router, prefix="/api/users", tags=["user"])
+app.include_router(auth.router, prefix="/jwt", tags=["auth"])
 
 
 if __name__ == "__main__":
