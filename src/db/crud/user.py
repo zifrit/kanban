@@ -100,7 +100,25 @@ async def update_user(
 ) -> Users:
     for key, value in user_schema.model_dump(exclude_unset=particular).items():
         setattr(user, key, value)
-    await session.commit()
+    try:
+        await session.commit()
+    except IntegrityError as e:
+        await session.rollback()
+        if "email" in str(e.orig):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="User with this email already exists",
+            )
+        elif "username" in str(e.orig):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="User with this username already exists",
+            )
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Duplicate entry for unique field",
+            )
     return user
 
 
