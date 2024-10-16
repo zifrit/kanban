@@ -31,6 +31,13 @@ class Task(Base):
     column_id: Mapped[int] = mapped_column(ForeignKey("column.id"))
     column: Mapped["Column"] = relationship(back_populates="tasks")
     creator_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
-    creator: Mapped["Users"] = relationship(back_populates="created_tasks")
+    creator: Mapped["Users"] = relationship(
+        back_populates="created_tasks",
+        foreign_keys=[creator_id],  # Явно указываем внешний ключ для creator
+    )
+
     executor_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"))
-    executor: Mapped["Users"] = relationship(back_populates="executable_tasks")
+    executor: Mapped["Users"] = relationship(
+        back_populates="executable_tasks",
+        foreign_keys=[executor_id],  # Явно указываем внешний ключ для executor
+    )

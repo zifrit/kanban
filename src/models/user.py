@@ -17,5 +17,12 @@ class Users(Base):
         Boolean, default=True, server_default="true"
     )
     boards: Mapped[list["Board"]] = relationship(back_populates="user")
-    created_tasks: Mapped[list["Task"]] = relationship(back_populates="creator")
-    executable_tasks: Mapped[list["Board"]] = relationship(back_populates="executor")
+    created_tasks: Mapped[list["Task"]] = relationship(
+        back_populates="creator",
+        foreign_keys="[Task.creator_id]",  # Указываем внешний ключ для created_tasks
+    )
+
+    executable_tasks: Mapped[list["Task"]] = relationship(
+        back_populates="executor",
+        foreign_keys="[Task.executor_id]",  # Указываем внешний ключ для executable_tasks
+    )
