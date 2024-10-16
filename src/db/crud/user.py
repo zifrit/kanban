@@ -11,7 +11,8 @@ from src.db.schematics.user import (
     ParticularUpdateUser,
     UpdateUser,
 )
-from src.utils.auth_utils import hash_password
+from src.utils import auth_utils
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -60,7 +61,7 @@ async def get_user(
 async def create_user(session: AsyncSession, user: CreateUser) -> Users:
     user = Users(
         username=user.username,
-        password=hash_password(user.password),
+        password=auth_utils.hash_password(user.password),
         email=user.email,
     )
     try:
