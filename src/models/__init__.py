@@ -5,5 +5,5 @@ __all__ = (
 )
 from .base_model import Base
 
-from .space import Board
+from .board import Board
 from .user import Users
