@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 class Board(Base):
     __tablename__ = "board"
     name: Mapped[str] = mapped_column(String(255))
-    user_is: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     user: Mapped["Users"] = relationship(back_populates="boards")
     columns: Mapped[list["Column"]] = relationship(back_populates="board")
 
