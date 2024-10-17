@@ -68,7 +68,7 @@ async def get_board(
     response_model=ShowBoardSchema,
     dependencies=[Depends(get_current_active_user)],
 )
-async def update_user(
+async def update_board(
     board_id: int,
     board_schema: UpdateBoardSchema,
     session: AsyncSession = Depends(db_helper.get_session),
@@ -86,7 +86,7 @@ async def update_user(
     response_model=ShowBoardSchema,
     dependencies=[Depends(get_current_active_user)],
 )
-async def update_user(
+async def particular_update_board(
     board_id: int,
     board_schema: ParticularUpdateBoardSchema,
     session: AsyncSession = Depends(db_helper.get_session),
