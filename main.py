@@ -1,7 +1,6 @@
 import uvicorn
 from fastapi import FastAPI
-from src.api.user import router as user_router
-from src.api import auth
+from src.api import auth, board, user
 from src.core.logger import LOGGING
 from src.core.settings import settings
 
@@ -11,7 +10,8 @@ app = FastAPI(
     openapi_url="/api/openapi.json",
 )
 
-app.include_router(user_router, prefix="/api/users", tags=["user"])
+app.include_router(user.router, prefix="/api/users", tags=["user"])
+app.include_router(board.router, prefix="/api/board", tags=["board"])
 app.include_router(auth.router, prefix="/jwt", tags=["auth"])
 
 
