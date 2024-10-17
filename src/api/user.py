@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, Response, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.utils.auth_utils import get_current_active_user
 from src.db.db_connection import db_helper
 from src.db.schematics.user import (
     ShowUser,
@@ -18,7 +19,11 @@ router = APIRouter()
 logger = logging.getLogger(__name__)
 
 
-@router.get("/", response_model=list[ShowUser])
+@router.get(
+    "/",
+    response_model=list[ShowUser],
+    dependencies=[Depends(get_current_active_user)],
+)
 async def get_user(
     session: AsyncSession = Depends(db_helper.get_session),
 ) -> [ShowUser]:
@@ -34,7 +39,11 @@ async def create_user(
     return await crud_user.create_user(session, user)
 
 
-@router.post("/activate", status_code=status.HTTP_200_OK)
+@router.post(
+    "/activate",
+    status_code=status.HTTP_200_OK,
+    dependencies=[Depends(get_current_active_user)],
+)
 async def user_activation(
     user: Users = Depends(crud_user.get_user),
     session: AsyncSession = Depends(db_helper.get_session),
@@ -42,14 +51,22 @@ async def user_activation(
     return await crud_user.user_activation(session, user)
 
 
-@router.get("/{user_id}", response_model=ShowUser)
+@router.get(
+    "/{user_id}",
+    response_model=ShowUser,
+    dependencies=[Depends(get_current_active_user)],
+)
 async def get_user(
     user: ShowUser = Depends(crud_user.get_active_user),
 ) -> ShowUser:
     return user
 
 
-@router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete(
+    "/{user_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=[Depends(get_current_active_user)],
+)
 async def delete_user(
     user: Users = Depends(crud_user.get_user),
     session: AsyncSession = Depends(db_helper.get_session),
@@ -58,7 +75,12 @@ async def delete_user(
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
-@router.patch("/{user_id}", status_code=status.HTTP_200_OK, response_model=ShowUser)
+@router.patch(
+    "/{user_id}",
+    status_code=status.HTTP_200_OK,
+    response_model=ShowUser,
+    dependencies=[Depends(get_current_active_user)],
+)
 async def partial_update_user(
     user_schema: ParticularUpdateUser,
     user: Users = Depends(crud_user.get_user),
@@ -69,7 +91,12 @@ async def partial_update_user(
     )
 
 
-@router.put("/{user_id}", status_code=status.HTTP_200_OK, response_model=ShowUser)
+@router.put(
+    "/{user_id}",
+    status_code=status.HTTP_200_OK,
+    response_model=ShowUser,
+    dependencies=[Depends(get_current_active_user)],
+)
 async def update_user(
     user_schema: UpdateUser,
     user: Users = Depends(crud_user.get_user),
