@@ -32,7 +32,7 @@ async def get_boards(
     session: AsyncSession,
 ):
 
-    boards = await session.scalars(Select(Board), Board.deleted_at.is_(None))
+    boards = await session.scalars(Select(Board).where(Board.deleted_at.is_(None)))
     return boards
 
 

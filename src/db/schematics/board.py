@@ -19,3 +19,4 @@ class ParticularUpdateBoardSchema(BoardSchema):
 
 class ShowBoardSchema(BoardSchema):
     user_id: int
+    id: int
