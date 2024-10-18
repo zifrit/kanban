@@ -11,7 +11,7 @@ from src.db.schematics.column import (
     UpdateColumnSchema,
 )
 from src.utils.auth_utils import get_current_active_user
-from src.db.crud import column as crud_column
+from src.db.crud.column import crud_column
 
 router = APIRouter()
 
@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 async def get_columns(
     session: AsyncSession = Depends(db_helper.get_session),
 ) -> ShowColumnSchema:
-    return await crud_column.get_columns(session)
+    return await crud_column.get(session=session)
 
 
 @router.post(
@@ -38,7 +38,7 @@ async def create_columns(
     column: CreateColumnSchema,
     session: AsyncSession = Depends(db_helper.get_session),
 ) -> ShowColumnSchema:
-    return await crud_column.create_column(session=session, column=column)
+    return await crud_column.create(session=session, obj_schema=column)
 
 
 @router.get(
@@ -50,7 +50,7 @@ async def get_column(
     column_id: int,
     session: AsyncSession = Depends(db_helper.get_session),
 ) -> ShowColumnSchema:
-    return await crud_column.get_column_by_id(column_id=column_id, session=session)
+    return await crud_column.get_by_id(id_=column_id, session=session)
 
 
 @router.put(
@@ -64,10 +64,10 @@ async def update_column(
     column_schema: UpdateColumnSchema,
     session: AsyncSession = Depends(db_helper.get_session),
 ):
-    return await crud_column.update_column(
+    return await crud_column.update(
         session=session,
-        column_id=column_id,
-        column_schema=column_schema,
+        id_=column_id,
+        obj_schema=column_schema,
     )
 
 
@@ -82,10 +82,10 @@ async def particular_update_column(
     column_schema: ParticularUpdateColumnSchema,
     session: AsyncSession = Depends(db_helper.get_session),
 ):
-    return await crud_column.update_column(
+    return await crud_column.update(
         session=session,
-        column_id=column_id,
-        column_schema=column_schema,
+        id_=column_id,
+        obj_schema=column_schema,
         particular=True,
     )
 
@@ -99,5 +99,5 @@ async def delete_column(
     column_id: int,
     session: AsyncSession = Depends(db_helper.get_session),
 ):
-    await crud_column.delete_column(column_id=column_id, session=session)
+    await crud_column.delete(id_=column_id, session=session)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
