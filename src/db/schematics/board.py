@@ -9,6 +9,10 @@ class CreateBoardSchema(BoardSchema):
     pass
 
 
+class CreateBoardWithUserIDSchema(BoardSchema):
+    user_id: int
+
+
 class UpdateBoardSchema(BoardSchema):
     pass
 

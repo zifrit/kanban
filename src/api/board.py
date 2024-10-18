@@ -7,12 +7,13 @@ import logging
 from src.models import Users
 from src.db.schematics.board import (
     CreateBoardSchema,
+    CreateBoardWithUserIDSchema,
     ShowBoardSchema,
     ParticularUpdateBoardSchema,
     UpdateBoardSchema,
 )
 from src.utils.auth_utils import get_current_active_user
-from src.db.crud import board as crud_board
+from src.db.crud.board import crud_board, get_user_boards as user_boards
 
 router = APIRouter()
 
@@ -27,7 +28,7 @@ logger = logging.getLogger(__name__)
 async def get_boards(
     session: AsyncSession = Depends(db_helper.get_session),
 ) -> ShowBoardSchema:
-    return await crud_board.get_boards(session)
+    return await crud_board.get(session=session)
 
 
 @router.get(
@@ -38,7 +39,7 @@ async def get_user_boards(
     session: AsyncSession = Depends(db_helper.get_session),
     user: Users = Depends(get_current_active_user),
 ) -> list[ShowBoardSchema]:
-    return await crud_board.get_user_boards(session, user=user)
+    return await user_boards(session, user=user)
 
 
 @router.post("/", response_model=ShowBoardSchema)
@@ -47,7 +48,10 @@ async def create_board(
     session: AsyncSession = Depends(db_helper.get_session),
     user: Users = Depends(get_current_active_user),
 ) -> ShowBoardSchema:
-    return await crud_board.create_board(session=session, user=user, board=board)
+    board_with_user_id = CreateBoardWithUserIDSchema(
+        **board.model_dump(), user_id=user.id
+    )
+    return await crud_board.create(session=session, obj_schema=board_with_user_id)
 
 
 @router.get(
@@ -59,7 +63,7 @@ async def get_board(
     board_id: int,
     session: AsyncSession = Depends(db_helper.get_session),
 ) -> ShowBoardSchema:
-    return await crud_board.get_board_by_id(board_id=board_id, session=session)
+    return await crud_board.get_by_id(id_=board_id, session=session)
 
 
 @router.put(
@@ -73,10 +77,10 @@ async def update_board(
     board_schema: UpdateBoardSchema,
     session: AsyncSession = Depends(db_helper.get_session),
 ):
-    return await crud_board.update_board(
+    return await crud_board.update(
         session=session,
-        board_id=board_id,
-        board_schema=board_schema,
+        id_=board_id,
+        obj_schema=board_schema,
     )
 
 
@@ -91,10 +95,10 @@ async def particular_update_board(
     board_schema: ParticularUpdateBoardSchema,
     session: AsyncSession = Depends(db_helper.get_session),
 ):
-    return await crud_board.update_board(
+    return await crud_board.update(
         session=session,
-        board_id=board_id,
-        board_schema=board_schema,
+        id_=board_id,
+        obj_schema=board_schema,
         particular=True,
     )
 
@@ -108,5 +112,5 @@ async def delete_board(
     board_id: int,
     session: AsyncSession = Depends(db_helper.get_session),
 ):
-    await crud_board.delete_board(board_id=board_id, session=session)
+    await crud_board.delete(id_=board_id, session=session)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
