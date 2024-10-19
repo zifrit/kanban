@@ -16,7 +16,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class ColumnManager(
+class BoardManager(
     ModelManager[
         Board,
         ShowBoardSchema,
@@ -28,7 +28,7 @@ class ColumnManager(
     pass
 
 
-crud_board = ColumnManager(Board)
+crud_board = BoardManager(Board)
 
 
 async def get_user_boards(
