@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import ForeignKey, Integer
+from sqlalchemy import ForeignKey, Integer, Boolean
 from typing import TYPE_CHECKING
 from .base_model import Base
 from sqlalchemy import String
@@ -33,11 +33,14 @@ class Task(Base):
     creator_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     creator: Mapped["Users"] = relationship(
         back_populates="created_tasks",
-        foreign_keys=[creator_id],  # Явно указываем внешний ключ для creator
+        foreign_keys=[creator_id],
     )
 
     executor_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"))
     executor: Mapped["Users"] = relationship(
         back_populates="executable_tasks",
-        foreign_keys=[executor_id],  # Явно указываем внешний ключ для executor
+        foreign_keys=[executor_id],
+    )
+    completed: Mapped[bool] = mapped_column(
+        Boolean, default=False, server_default="false"
     )
