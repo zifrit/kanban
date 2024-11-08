@@ -1,4 +1,5 @@
 from src.db.schematics.base import BaseSchema
+from src.db.schematics.column import ShortShowColumnSchema
 
 
 class BoardSchema(BaseSchema):
@@ -24,3 +25,7 @@ class ParticularUpdateBoardSchema(BoardSchema):
 class ShowBoardSchema(BoardSchema):
     user_id: int
     id: int
+
+
+class ShowBoarWithColumnSchema(BoardSchema):
+    columns: list[ShortShowColumnSchema] | None = None

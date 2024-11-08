@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Response, status
+from fastapi import APIRouter, Depends, Response, status, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.db.db_connection import db_helper
@@ -7,11 +7,13 @@ import logging
 from src.db.schematics.column import (
     CreateColumnSchema,
     ShowColumnSchema,
+    ShowColumnWithTasksSchema,
     ParticularUpdateColumnSchema,
     UpdateColumnSchema,
 )
 from src.utils.auth_utils import get_current_active_user
-from src.db.crud.column import crud_column
+from src.db.crud.column import crud_column, get_column_tasks
+from src.utils.raising_http_excp import RaiseHttpException
 
 router = APIRouter()
 
@@ -51,6 +53,20 @@ async def get_column(
     session: AsyncSession = Depends(db_helper.get_session),
 ) -> ShowColumnSchema:
     return await crud_column.get_by_id(id_=column_id, session=session)
+
+
+@router.get(
+    "/{column_id}/tasks",
+    response_model=ShowColumnWithTasksSchema,
+    dependencies=[Depends(get_current_active_user)],
+)
+async def get_column_with_tasks(
+    column_id: int,
+    session: AsyncSession = Depends(db_helper.get_session),
+):
+    result = await get_column_tasks(session, column_id)
+    RaiseHttpException.check_is_exist(result)
+    return result
 
 
 @router.put(

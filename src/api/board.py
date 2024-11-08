@@ -10,10 +10,16 @@ from src.db.schematics.board import (
     CreateBoardWithUserIDSchema,
     ShowBoardSchema,
     ParticularUpdateBoardSchema,
+    ShowBoarWithColumnSchema,
     UpdateBoardSchema,
 )
 from src.utils.auth_utils import get_current_active_user
-from src.db.crud.board import crud_board, get_user_boards as user_boards
+from src.db.crud.board import (
+    crud_board,
+    get_user_boards as user_boards,
+    get_board_columns,
+)
+from src.utils.raising_http_excp import RaiseHttpException
 
 router = APIRouter()
 
@@ -64,6 +70,20 @@ async def get_board(
     session: AsyncSession = Depends(db_helper.get_session),
 ) -> ShowBoardSchema:
     return await crud_board.get_by_id(id_=board_id, session=session)
+
+
+@router.get(
+    "/{board_id}/column",
+    response_model=ShowBoarWithColumnSchema,
+    dependencies=[Depends(get_current_active_user)],
+)
+async def get_board_with_column(
+    board_id: int,
+    session: AsyncSession = Depends(db_helper.get_session),
+):
+    result = await get_board_columns(session, board_id)
+    RaiseHttpException.check_is_exist(result)
+    return result
 
 
 @router.put(

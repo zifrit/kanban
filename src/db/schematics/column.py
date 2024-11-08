@@ -1,4 +1,5 @@
 from src.db.schematics.base import BaseSchema
+from src.db.schematics.task import ShortShowTaskSchema
 
 
 class ColumnSchema(BaseSchema):
@@ -21,3 +22,11 @@ class ParticularUpdateColumnSchema(ColumnSchema):
 
 class ShowColumnSchema(ColumnSchema):
     id: int
+
+
+class ShortShowColumnSchema(ColumnSchema):
+    id: int
+
+
+class ShowColumnWithTasksSchema(ColumnSchema):
+    tasks: list[ShortShowTaskSchema] | None = None

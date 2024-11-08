@@ -30,3 +30,7 @@ class ShowTaskSchema(TaskSchema):
     id: int
     creator_id: int
     completed: bool
+
+
+class ShortShowTaskSchema(TaskSchema):
+    id: int
