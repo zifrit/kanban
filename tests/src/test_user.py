@@ -175,7 +175,7 @@ async def test_get_invalid_user(
     [
         (
             {
-                "search": "/api/users/1",
+                "search": "/api/users/2",
             },
             {
                 "status": http.HTTPStatus.NO_CONTENT,
