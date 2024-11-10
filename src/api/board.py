@@ -124,7 +124,7 @@ async def particular_update_board(
 
 
 @router.delete(
-    "{board_id}",
+    "/{board_id}",
     status_code=status.HTTP_204_NO_CONTENT,
     dependencies=[Depends(get_current_active_user)],
 )

@@ -5,7 +5,7 @@ from src.db.db_connection import db_helper
 import logging
 
 from src.models.user import Users
-from src.models.board import Task
+from src.models.board import Task, Column
 from src.db.schematics.task import (
     CreateTaskSchema,
     CreateTaskWithUserIDSchema,
@@ -15,6 +15,7 @@ from src.db.schematics.task import (
 )
 from src.utils.auth_utils import get_current_active_user
 from src.db.crud.task import crud_task, get_user_task
+from src.utils.raising_http_excp import RaiseHttpException
 
 router = APIRouter()
 
@@ -42,6 +43,9 @@ async def create_task(
     user: Users = Depends(get_current_active_user),
     session: AsyncSession = Depends(db_helper.get_session),
 ) -> ShowTaskSchema:
+    await RaiseHttpException.check_is_not_delete(
+        session=session, _models={"Column": Column}, _ids={"Column": task.column_id}
+    )
     task.executor_id = user.id if task.executor_id is None else task.executor_id
     task_with_user_id = CreateTaskWithUserIDSchema(
         **task.model_dump(), creator_id=user.id

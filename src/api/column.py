@@ -11,6 +11,7 @@ from src.db.schematics.column import (
     ParticularUpdateColumnSchema,
     UpdateColumnSchema,
 )
+from src.models import Board
 from src.utils.auth_utils import get_current_active_user
 from src.db.crud.column import crud_column, get_column_tasks
 from src.utils.raising_http_excp import RaiseHttpException
@@ -40,6 +41,9 @@ async def create_columns(
     column: CreateColumnSchema,
     session: AsyncSession = Depends(db_helper.get_session),
 ) -> ShowColumnSchema:
+    await RaiseHttpException.check_is_not_delete(
+        session=session, _models={"Board": Board}, _ids={"Board": column.board_id}
+    )
     return await crud_column.create(session=session, obj_schema=column)
 
 
