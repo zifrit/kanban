@@ -48,6 +48,7 @@ services:
       poetry run pytest tests/src/test_user.py
       && poetry run pytest tests/src/test_board.py
       && poetry run pytest tests/src/test_column.py
+      && poetry run pytest tests/src/test_tasks.py
       "
 
 networks:
