@@ -44,7 +44,11 @@ services:
     networks:
       - test_network
     entrypoint: >
-      sh -c "poetry run pytest ."
+      sh -c "
+      poetry run pytest tests/src/test_user.py
+      && poetry run pytest tests/src/test_board.py
+      && poetry run pytest tests/src/test_column.py
+      "
 
 networks:
   test_network:

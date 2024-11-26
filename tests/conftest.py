@@ -3,7 +3,7 @@ import pytest
 import pytest_asyncio
 from sqlalchemy import Select
 
-from src.core.settings import Settings, settings
+from src.core.settings import settings
 from src.db.db_connection import db_helper
 from src.models.user import Users
 from httpx import AsyncClient, ASGITransport
@@ -13,7 +13,7 @@ from src.utils.auth_utils import hash_password
 
 @pytest.fixture(scope="session")
 def event_loop():
-    loop = asyncio.get_event_loop_policy().new_event_loop()
+    loop = asyncio.new_event_loop()
     yield loop
     loop.close()
 
