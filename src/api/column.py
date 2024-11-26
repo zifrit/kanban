@@ -84,6 +84,11 @@ async def update_column(
     column_schema: UpdateColumnSchema,
     session: AsyncSession = Depends(db_helper.get_session),
 ):
+    await RaiseHttpException.check_is_not_delete(
+        session=session,
+        _models={"Board": Board},
+        _ids={"Board": column_schema.board_id},
+    )
     return await crud_column.update(
         session=session,
         id_=column_id,
@@ -102,6 +107,12 @@ async def particular_update_column(
     column_schema: ParticularUpdateColumnSchema,
     session: AsyncSession = Depends(db_helper.get_session),
 ):
+    if column_schema.board_id:
+        await RaiseHttpException.check_is_not_delete(
+            session=session,
+            _models={"Board": Board},
+            _ids={"Board": column_schema.board_id},
+        )
     return await crud_column.update(
         session=session,
         id_=column_id,

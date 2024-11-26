@@ -39,16 +39,20 @@ async def get_tasks(
     dependencies=[Depends(get_current_active_user)],
 )
 async def create_task(
-    task: CreateTaskSchema,
+    task_schema: CreateTaskSchema,
     user: Users = Depends(get_current_active_user),
     session: AsyncSession = Depends(db_helper.get_session),
 ) -> ShowTaskSchema:
     await RaiseHttpException.check_is_not_delete(
-        session=session, _models={"Column": Column}, _ids={"Column": task.column_id}
+        session=session,
+        _models={"Column": Column},
+        _ids={"Column": task_schema.column_id},
     )
-    task.executor_id = user.id if task.executor_id is None else task.executor_id
+    task_schema.executor_id = (
+        user.id if task_schema.executor_id is None else task_schema.executor_id
+    )
     task_with_user_id = CreateTaskWithUserIDSchema(
-        **task.model_dump(), creator_id=user.id
+        **task_schema.model_dump(), creator_id=user.id
     )
     return await crud_task.create(session=session, obj_schema=task_with_user_id)
 
@@ -73,13 +77,18 @@ async def get_task(
 )
 async def update_task(
     task_id: int,
-    column_schema: UpdateTaskSchema,
+    task_schema: UpdateTaskSchema,
     session: AsyncSession = Depends(db_helper.get_session),
 ):
+    await RaiseHttpException.check_is_not_delete(
+        session=session,
+        _models={"Column": Column},
+        _ids={"Column": task_schema.column_id},
+    )
     return await crud_task.update(
         session=session,
         id_=task_id,
-        obj_schema=column_schema,
+        obj_schema=task_schema,
     )
 
 
@@ -91,13 +100,19 @@ async def update_task(
 )
 async def particular_update_task(
     task_id: int,
-    column_schema: ParticularUpdateTaskSchema,
+    task_schema: ParticularUpdateTaskSchema,
     session: AsyncSession = Depends(db_helper.get_session),
 ):
+    if task_schema.column_id:
+        await RaiseHttpException.check_is_not_delete(
+            session=session,
+            _models={"Column": Column},
+            _ids={"Column": task_schema.column_id},
+        )
     return await crud_task.update(
         session=session,
         id_=task_id,
-        obj_schema=column_schema,
+        obj_schema=task_schema,
         particular=True,
     )
 

@@ -25,4 +25,6 @@ class RaiseHttpException:
             if not result:
                 errors.append({key: "Not exist"})
         if errors:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=errors)
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=errors
+            )
