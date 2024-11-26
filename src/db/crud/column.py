@@ -28,6 +28,7 @@ class ColumnManager(
     ]
 ):
     async def delete(self, session: AsyncSession, id_: int, *args, **kwargs):
+        await self.get_by_id(session, id_=id_)
         exists_query = await session.scalar(
             select(
                 exists()

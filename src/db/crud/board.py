@@ -29,6 +29,7 @@ class BoardManager(
     ]
 ):
     async def delete(self, session: AsyncSession, id_: int, *args, **kwargs):
+        board = await self.get_by_id(session, id_=id_)
         exists_query = await session.scalar(
             select(
                 exists()
@@ -41,7 +42,6 @@ class BoardManager(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="The board has unfinished tasks",
             )
-        board = await self.get_by_id(session, id_=id_)
         columns = await session.scalars(select(Column).where(Column.board_id == id_))
         columns = list(columns)
         columns_ids = [column.id for column in columns]
