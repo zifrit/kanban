@@ -122,7 +122,7 @@ async def particular_update_column(
 
 
 @router.delete(
-    "{column_id}",
+    "/{column_id}",
     status_code=status.HTTP_204_NO_CONTENT,
     dependencies=[Depends(get_current_active_user)],
 )

@@ -118,7 +118,7 @@ async def particular_update_task(
 
 
 @router.delete(
-    "{task_id}",
+    "/{task_id}",
     status_code=status.HTTP_204_NO_CONTENT,
     dependencies=[Depends(get_current_active_user)],
 )
